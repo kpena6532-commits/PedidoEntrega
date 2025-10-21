@@ -1,4 +1,4 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 
 {% block title %}Inicio{% endblock %}
 
@@ -7,6 +7,6 @@
     {% if 'username' in session %}
         <p>Has iniciado sesión como {{ session['username'] }} ({{ session['role'] }}).</p>
     {% else %}
-        <p>No has iniciado sesión</p>
+        <p>No has iniciado sesión.</p>
     {% endif %}
 {% endblock %}

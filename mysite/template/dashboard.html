@@ -4,20 +4,20 @@
 
 {% block content %}
     <h1>Dashboard</h1>
-    <p>Bienvenido a tu dashboard, {{ session['username'] }}</p>
+    <p>Bienvenido a tu dashboard, {{ session['username'] }}!</p>
 
     {% if session['role'] == 'admin' %}
         <h2>Panel de Administración</h2>
         <ul>
             <li>Gestionar usuarios</li>
-            <li>Ver estadisticas del sistema</li>
-            <li>Configurar parametros globales</li>
+            <li>Ver estadísticas del sistema</li>
+            <li>Configurar parámetros globales</li>
         </ul>
     {% elif session['role'] == 'editor' %}
         <h2>Panel de Editor</h2>
         <ul>
-            <li>Crear nuevo articulo</li>
-            <li>Editar articulos existentes</li>
+            <li>Crear nuevo artículo</li>
+            <li>Editar artículos existentes</li>
             <li>Moderar comentarios</li>
         </ul>
     {% else %}
