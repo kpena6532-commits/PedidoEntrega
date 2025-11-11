@@ -9,75 +9,75 @@
     <div class="content">
         <div class="search-section">
 
-            <form class="search-form" method="POST" action="/buscar_pedido">
-                <input type="text" name="numero_pedido" class="search-input"
-                       placeholder="Ingrese Número de Pedido (ej. PED001)"
-                       value="{{ request.form.get('numero_pedido', '') }}" required>
-                <button type="submit" class="btn btn-primary">Buscar Pedido</button>
+            <form class="search-form" method="POST" action="/buscar_cliente">
+                <input type="text" name="codigo_cliente" class="search-input"
+                       placeholder="Ingrese Código Cliente (ej. CLI001)"
+                       value="{{ request.form.get('codigo_cliente', '') }}" required>
+                <button type="submit" class="btn btn-primary">Buscar Cliente</button>
             </form>
 
-            {% if pedidos_ejemplo %}
+            {% if clientes_ejemplo %}
             <div style="margin-top: 20px; font-size: 0.9em; color: #6c757d;">
-                <strong>Pedidos de ejemplo:</strong> PED001, PED002, PED003
+                <strong>Clientes de ejemplo:</strong> CLI001, CLI002, CLI003
             </div>
             {% endif %}
         </div>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Buscando pedido...</p>
+            <p>Buscando clientes...</p>
         </div>
 
         {% if error %}
         <div class="alert alert-error">
+            <span class="closebtn">&times;</span>
             <strong>Error:</strong> {{ error }}
         </div>
         {% endif %}
 
         {% if success %}
         <div class="alert alert-success">
+            <span class="closebtn">&times;</span>
             <strong>Éxito:</strong> {{ success }}
         </div>
         {% endif %}
 
-        {% if pedido %}
+        {% if codigo %}
         <div class="pedido-info">
-            <h5><center>Pedido No.: {{ pedido.numero }}</center></h5>
+            <h5><center>Pedido No.: {{ codigo.codigo }}</center></h5>
 
             <table border="1">
                 <thead>
                     <tr>
                         <th>Cliente:</th>
-                        <th>{{ pedido.cliente }}</th>
+                        <th>{{ codigo.cliente }}</th>
                         <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;</th>
                         <th>Teléfono:</th>
-                        <th>{{ pedido.telefono }}</th>
+                        <th>{{ codigo.telefono }}</th>
                     </tr>
                     <tr>
                         <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;</th>
                         <th>Fecha:</th>
-                        <th>{{ pedido.fecha }}</th>
+                        <th>{{ codigo.fecha }}</th>
                     </tr>
                     <tr>
                         <th>Dirección:</th>
-                        <th>{{ pedido.direccion }}</th>
+                        <th>{{ codigo.direccion }}</th>
                         <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                         <th>Ciudad:</th>
-                        <th>{{ pedido.ciudad }}</th>
-                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        <th>Estado:</th>
-                        <th>{{ pedido.estado }}</th>
+                        <th>{{ codigo.ciudad }}</th>
                     </tr>
                 </thead>
             </table>
-            </div>
+            <div class="info-label">Total de Artículos</div>
+            <div class="info-value">{{ codigo.articulos | length }}</div>
+        </div>
 
         <div class="form-section">
-            <form method="POST" action="/actualizar_pedido" id="pedidoForm">
-                <input type="hidden" name="numero_pedido" value="{{ pedido.numero }}">
-
+            <form method="POST" action="/grabar_pedido" id="pedidoForm">
+                <input type="hidden" name="numero_pedido" value="{{ codigo.codigo }}">
                 <table class="articulos-table">
                     <thead>
                         <tr>
@@ -89,7 +89,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for articulo in pedido.articulos %}
+                        {% for articulo in codigo.articulos %}
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>
@@ -124,7 +124,7 @@
 
                 <div class="form-actions">
                     <br>
-                    <button type="submit" class="btn btn-success">Entregar Pedido</button>
+                    <button type="submit" class="btn btn-success">Grabar Pedido</button>
                     <a href="/" class="btn btn-danger">Cancelar</a>
                 </div>
             </form>
@@ -145,17 +145,16 @@
         const precio = document.querySelector(`input[name="precio_${articuloId}"]`).value;
         const subtotal = cantidad * precio;
 
-        document.getElementById(`subtotal_${articuloId}`).textContent = 
+        document.getElementById(`subtotal_${articuloId}`).textContent =
             `$${subtotal.toFixed(2)}`;
-        
+
         calcularTotal();
     }
 
     function calcularTotal() {
         let total = 0;
         document.querySelectorAll('.subtotal').forEach(function(elemento) {
-            const valor = parseFloat(elemento.textContent.replace('$', ''));
-            total += valor;
+            total += parseFloat(elemento.textContent.replace('$', ''));
         });
 
         document.getElementById('total').textContent = `$${total.toFixed(2)}`;
@@ -165,7 +164,7 @@
     document.getElementById('pedidoForm').addEventListener('submit', function(e) {
         const inputs = this.querySelectorAll('input[required]');
         let valid = true;
-        
+
         inputs.forEach(function(input) {
             if (!input.value.trim()) {
                 valid = false;
